@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import './login.dart';
 
 final _supabase = Supabase.instance.client;
 
@@ -49,10 +50,31 @@ class _InventarioPaginaState extends State<InventarioPagina> {
   final TextEditingController _quantidadeController = TextEditingController();
   final TextEditingController _valorController = TextEditingController();
 
+  //logout
+  Future<void> _fazerLogout() async {
+    try {
+      await _supabase.auth.signOut();
+
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const LoginPagina()),
+        );
+      }
+    } catch (e) {
+      debugPrint("Erro ao deslogar: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Inventário")),
+      appBar: AppBar(
+        title: const Text("Inventário"),
+        actions: [
+          IconButton(icon: const Icon(Icons.logout), onPressed: _fazerLogout),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
